@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] Transform character;
-    [SerializeField] Vector3 offset;
-    [SerializeField] float yPos;
-    // Start is called before the first frame update
+    [SerializeField] Vector2 offset;
+    [SerializeField] Transform target;
+
     void Start()
     {
         
@@ -16,8 +15,10 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var pos = character.transform.position + offset;
-        pos.y= yPos;
+        Vector3 pos=target.position;
+        pos.x+=offset.x;
+        pos.y=offset.y;
+        pos.z = -10;
         transform.position = pos;
     }
 }
