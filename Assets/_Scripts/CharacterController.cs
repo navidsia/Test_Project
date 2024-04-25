@@ -1,3 +1,4 @@
+using Mono.Cecil.Cil;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -5,9 +6,11 @@ using UnityEngine.SceneManagement;
 public class CharacterController : MonoBehaviour
 {
     [SerializeField] GameObject shape;
+    [SerializeField] Projectile projectilePrefab;
     [SerializeField] float movementSpeed;
     [SerializeField] float jumpForce;
     [SerializeField] float groundDetectionRange;
+    [SerializeField] int damage;
     [SerializeField] LayerMask groundMask;
     [SerializeField] int maxJumpCount;
     [SerializeField] KeyCode jumpKey;
@@ -33,6 +36,14 @@ public class CharacterController : MonoBehaviour
         {
             Jump();
         }
+        if (Input.GetMouseButtonDown(0))
+            Shoot();
+    }
+
+    private void Shoot()
+    {
+        var projectile=Instantiate(projectilePrefab,transform.position,Quaternion.identity);
+        projectile.Shoot(isRight ? 1 : -1,damage);
     }
 
     private void CheckHeightDeath()
