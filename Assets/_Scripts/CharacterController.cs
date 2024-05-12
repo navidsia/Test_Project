@@ -15,6 +15,7 @@ public class CharacterController : MonoBehaviour
     [SerializeField] int maxJumpCount;
     [SerializeField] KeyCode jumpKey;
     [SerializeField] float deathHeight;
+    [SerializeField] Animator animator;
 
     Rigidbody2D rigidbody2D;
     int _jumpCount;
@@ -84,6 +85,7 @@ public class CharacterController : MonoBehaviour
 
     private void MoveLogic(float input)
     {
+        animator.SetBool("IsMoving", input!= 0);
         var v=rigidbody2D.velocity;
         v.x = input*movementSpeed;
         rigidbody2D.velocity = v;
