@@ -9,6 +9,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] bool canPatrol;
     [SerializeField] int Health;
     [SerializeField] List<PatrolMovement> patrolPositions;
+    [SerializeField] LayerMask characterLayer;
+    [SerializeField] float characterDetectionRange;
+    [SerializeField] int damage;
     List<Vector3> patrolPositionCopy;
     int patrolPosIndex=0;
     int _maxHealth;
@@ -35,7 +38,6 @@ public class Enemy : MonoBehaviour
         if (Health <= 0)
             Die();
     }
-
     private void Die()
     {
         Destroy(gameObject);
@@ -47,6 +49,12 @@ public class Enemy : MonoBehaviour
         {
             MoveToPosition(patrolPositionCopy[patrolPosIndex], patrolPositions[patrolPosIndex].duration);
         }
+        var hit = Physics2D.OverlapCircle(transform.position, characterDetectionRange, characterLayer);
+        if (hit)
+        {
+            hit.gameObject.GetComponent<CharacterController>().GetHit(damage);
+        }
+
     }
     void MoveToPosition(Vector3 pos,float duration)
     {
@@ -71,6 +79,11 @@ public class Enemy : MonoBehaviour
             }
             time = 0;
         }
+    }
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.black;
+        Gizmos.DrawWireSphere(transform.position, characterDetectionRange);
     }
 }
 [System.Serializable]

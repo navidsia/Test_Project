@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,6 +11,7 @@ public class CharacterController : MonoBehaviour
     [SerializeField] float jumpForce;
     [SerializeField] float groundDetectionRange;
     [SerializeField] int damage;
+    [SerializeField] int health;
     [SerializeField] LayerMask groundMask;
     [SerializeField] int maxJumpCount;
     [SerializeField] KeyCode jumpKey;
@@ -20,9 +22,12 @@ public class CharacterController : MonoBehaviour
     int _jumpCount;
     bool isOnGround;
     bool isRight=true;
+    bool isHittable;
     void Start()
     {
         rigidbody2D= GetComponent<Rigidbody2D>();
+        isHittable= true;
+        
     }
 
     void Update()
@@ -51,6 +56,36 @@ public class CharacterController : MonoBehaviour
         if (transform.position.y < deathHeight)
             Die();
     }
+    public void GetHit(int damage)
+    {
+        if(!isHittable)
+            return;
+
+        if (health <= 0)
+            return;
+
+        health -= damage;
+
+        if (health <= 0)
+            Die();
+        else
+            StartCoroutine(StartInvulnerability());
+        HUDController.instance.Repaint(health);
+    }
+
+    private IEnumerator StartInvulnerability()
+    {
+        isHittable = false;
+        for (int i = 0; i < 3; i++)
+        {
+            shape.SetActive(false);
+            yield return new WaitForSeconds(.2f);
+            shape.SetActive(true);
+            yield return new WaitForSeconds(.2f);
+        }
+        isHittable = true;
+    }
+
     private void Die()
     {
         SceneManager.LoadScene(0);
